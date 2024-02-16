@@ -14,7 +14,7 @@ def startFunktion():
         [3, 0, 0, 0, 8, 0, 0, 0, 0]]
     recursEintragung(sudokuStart, 0)
     
-def recursEintragung(sudokuAlt, reihe):
+def recursEintragung(sudokuAlt, reihe): # eintragung ist fatal fehlerhaft!!!!!!!!!!!!!!!!!!!!!!
     sudoku = dc(sudokuAlt)
     freieFelder = [x for x in range(9) if sudoku[reihe][x] == 0]
     moeglicheZahlen = moeglicheZahlenErmitteln(sudoku[reihe])
