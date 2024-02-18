@@ -3,28 +3,31 @@ from collections import Counter
 
 def startFunktion():
     sudokuStart = [
-        [0, 9, 0, 1, 0, 0, 0, 0, 0],        
-        [1, 0, 6, 0, 0, 8, 7, 0, 0],        
-        [0, 0, 0, 5, 0, 0, 0, 3, 0],        
-        [0, 0, 0, 0, 6, 0, 0, 0, 7],        
-        [0, 0, 2, 0, 0, 0, 0, 0, 0],        
-        [4, 0, 8, 0, 0, 1, 6, 0, 0],        
-        [0, 2, 0, 0, 0, 0, 4, 0, 0],        
-        [0, 7, 0, 0, 0, 9, 0, 0, 0],        
-        [9, 0, 4, 8, 0, 0, 0, 0, 5]]    
+        [0, 5, 0, 0, 0, 0, 0, 2, 0],        
+        [0, 0, 6, 4, 0, 0, 1, 3, 0],        
+        [4, 0, 0, 0, 9, 0, 0, 0, 0],        
+        [0, 0, 0, 1, 0, 0, 0, 0, 2],        
+        [0, 0, 8, 0, 0, 0, 0, 0, 9],        
+        [0, 3, 0, 0, 7, 0, 8, 1, 0],        
+        [0, 0, 3, 9, 0, 0, 6, 4, 0],        
+        [0, 0, 0, 0, 0, 0, 0, 0, 8],        
+        [0, 7, 0, 0, 0, 5, 0, 0, 0]]   
     if recursEintragung(sudokuStart): print('Fin')
     
+    # versionskontrolle ist mist
 def recursEintragung(sudoku):
-    if zeichneSudoku(sudoku): return True   
-    for wahrscheinlichkeit in range(5):
-        for k in kombinierteFelderUndMoeglicheEintraege(sudoku):       
-            if len(k[1]) == wahrscheinlichkeit:
-                if wahrscheinlichkeit == 0: return False
+    if zeichneSudoku(sudoku): return True  
+    temp = dc(sudoku)
+    kombinationen = kombinierteFelderUndMoeglicheEintraege(sudoku)
+    for anzahlMoeglichkeiten in range(4):        
+        for k in kombinationen: 
+            if len(k[1]) == anzahlMoeglichkeiten:
+                if anzahlMoeglichkeiten == 0: return False
                 for eintrag in k[1]:
-                    sudokuSave = dc(sudoku)
-                    sudoku[k[0][0]][k[0][1]] = eintrag
+                    sudoku = temp
+                    sudoku[k[0][0]][k[0][1]] = eintrag 
                     if recursEintragung(sudoku): return True
-                    sudoku = sudokuSave
+    print('fuck')
 
 def kombinierteFelderUndMoeglicheEintraege(sudoku):    
     freieFelder = freieFelderErmitteln(sudoku)   
@@ -68,7 +71,8 @@ def zeichneSudoku(sudoku):
             if (r + 1) % 3 == 0 and (r + 1) != 9:
                 print('------ ------- ------')
         print()
-        return True
-    
+        return True  
+    return False  
 
-startFunktion()
+if __name__ == '__main__':
+    startFunktion()
