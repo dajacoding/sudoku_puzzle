@@ -3,31 +3,33 @@ from collections import Counter
 
 def startFunktion():
     sudokuStart = [
-        [0, 5, 0, 0, 0, 0, 0, 2, 0],        
-        [0, 0, 6, 4, 0, 0, 1, 3, 0],        
-        [4, 0, 0, 0, 9, 0, 0, 0, 0],        
-        [0, 0, 0, 1, 0, 0, 0, 0, 2],        
-        [0, 0, 8, 0, 0, 0, 0, 0, 9],        
-        [0, 3, 0, 0, 7, 0, 8, 1, 0],        
-        [0, 0, 3, 9, 0, 0, 6, 4, 0],        
-        [0, 0, 0, 0, 0, 0, 0, 0, 8],        
-        [0, 7, 0, 0, 0, 5, 0, 0, 0]]   
-    if recursEintragung(sudokuStart): print('Fin')
-    
-    # versionskontrolle ist mist
+        [0, 6, 0, 0, 0, 9, 3, 0, 0],        
+        [0, 7, 0, 0, 1, 0, 0, 0, 0],        
+        [3, 0, 1, 0, 0, 2, 0, 4, 0],        
+        [0, 1, 0, 0, 0, 0, 0, 0, 0],        
+        [0, 0, 0, 0, 0, 4, 0, 0, 8],        
+        [9, 0, 5, 0, 2, 0, 7, 0, 0],        
+        [0, 0, 0, 9, 0, 0, 0, 7, 0],        
+        [2, 0, 3, 0, 5, 0, 9, 0, 0],        
+        [6, 0, 0, 0, 0, 0, 0, 0, 0]]   
+    if recursEintragung(sudokuStart): print('Fin') 
+
 def recursEintragung(sudoku):
-    if zeichneSudoku(sudoku): return True  
+    if zeichneSudoku(sudoku): return True
     temp = dc(sudoku)
     kombinationen = kombinierteFelderUndMoeglicheEintraege(sudoku)
-    for anzahlMoeglichkeiten in range(4):        
+    if 0 in [len(k[1]) for k in kombinationen]: return False
+
+    for anzahlMoeglichkeiten in range(1, 5):
         for k in kombinationen: 
             if len(k[1]) == anzahlMoeglichkeiten:
-                if anzahlMoeglichkeiten == 0: return False
-                for eintrag in k[1]:
-                    sudoku = temp
-                    sudoku[k[0][0]][k[0][1]] = eintrag 
+
+                for eintrag in k[1]:                    
+                    sudoku[k[0][0]][k[0][1]] = eintrag
                     if recursEintragung(sudoku): return True
-    print('fuck')
+                    sudoku = temp
+                    
+    print('fuck ')
 
 def kombinierteFelderUndMoeglicheEintraege(sudoku):    
     freieFelder = freieFelderErmitteln(sudoku)   
@@ -56,7 +58,7 @@ def moeglicheEintraegeErmittelnSpalte(sudoku, spalte):
     return moeglicheEintraegeErmittelnReihe([x[spalte] for x in sudoku])
 
 def moeglicheEintraegeErmittelnQuadrat(sudoku, reihe, spalte):
-    temp = [[sudoku[x][y] for y in bekommeQuadrat(spalte)] for x in bekommeQuadrat(reihe)]
+    temp = [[sudoku[y][x] for x in bekommeQuadrat(spalte)] for y in bekommeQuadrat(reihe)]
     return moeglicheEintraegeErmittelnReihe(temp[0] + temp[1] + temp[2])
 
 def bekommeQuadrat(pos):
