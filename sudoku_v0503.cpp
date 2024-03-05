@@ -27,17 +27,18 @@ struct Situation {
 SudokuStruct bekommeStartSudoku() 
 {
     SudokuStruct sudokuStart = {
-        0, 6, 0, 0, 0, 9, 3, 0, 0,        
-        0, 7, 0, 0, 1, 0, 0, 0, 0,        
-        3, 0, 1, 0, 0, 2, 0, 4, 0,        
-        0, 1, 0, 0, 0, 0, 0, 0, 0,        
-        0, 0, 0, 0, 0, 4, 0, 0, 8,        
-        9, 0, 5, 0, 2, 0, 7, 0, 0,        
-        0, 0, 0, 9, 0, 0, 0, 7, 0,        
-        2, 0, 3, 0, 5, 0, 9, 0, 0,        
-        6, 0, 0, 0, 0, 0, 0, 0, 0};  
+        0, 0, 6, 0, 0, 0, 0, 7, 0,        
+        8, 0, 0, 0, 0, 0, 0, 4, 6,        
+        0, 0, 5, 3, 9, 0, 0, 0, 0,        
+        0, 0, 0, 0, 0, 0, 3, 0, 1,        
+        2, 0, 7, 0, 0, 0, 0, 6, 9,        
+        0, 0, 0, 5, 0, 0, 0, 0, 0,        
+        0, 0, 0, 0, 0, 0, 0, 0, 0,        
+        0, 0, 9, 7, 0, 0, 0, 1, 5,        
+        0, 6, 0, 0, 2, 8, 0, 0, 0};  
     return sudokuStart;
 }
+
 
 // Ermittlung freier Felder (jene mit default "0" - Eintrag)
 // uebergabe: aktuellen Spielstand als Sudoku
@@ -59,6 +60,7 @@ vector<Koordinaten> freieFelderErmitteln(SudokuStruct sudoku)
     return freieFelder;
 }
         
+        
 // Ermittlung von nichtvorhandenen Eintragungen zwischen "1" und "9"
 // Uebergabe: 3x Liste (Reihe, Spalte, Quadrat)
 // Rueckgabe: Vektor mit Ziffern, die in keiner der Listen vorhanden ist
@@ -70,18 +72,13 @@ vector<int> moeglicheEintraegeErmittelnRSQ(int r[], int s[], int q[])
         int z = 0;
         for (int j = 0; j < 9; j++)
         {
-            if ((r[j] == i ) || (s[j] == i) || (q[j] == i))
-            {
-                z++;
-            } 
+            if ((r[j] == i ) || (s[j] == i) || (q[j] == i)) {z++;} 
         }
-        if (z == 0)
-        {
-            temp.push_back(i);
-        }
+        if (z == 0) {temp.push_back(i);}
     }	
     return temp;
 }   
+
 
 // Ermittlung von moeglichen Eintragungen je Feld
 // Uebergabe: aktuellen Spielstand (Sudoku) und Koordinaten fuer ein Feld
@@ -97,14 +94,8 @@ vector<int> moeglicheEintraegeErmittelnAlle(SudokuStruct sudoku, Koordinaten rei
     {
         for (int j = 0; j < 9; j++)
         {
-            if (reiheSpalte.kon[0] == i)
-            {
-                sr[j] = sudoku.sud[i][j];
-            }
-            if (reiheSpalte.kon[1] == j)
-            {
-                ss[i] = sudoku.sud[i][j];
-            }
+            if (reiheSpalte.kon[0] == i) {sr[j] = sudoku.sud[i][j];}
+            if (reiheSpalte.kon[1] == j) {ss[i] = sudoku.sud[i][j];}
             if (((reiheSpalte.kon[0] / 3) == (i / 3)) && ((reiheSpalte.kon[1] / 3) == (j / 3 ))) 
             {
                 sq[qTemp] = sudoku.sud[i][j];
@@ -114,6 +105,7 @@ vector<int> moeglicheEintraegeErmittelnAlle(SudokuStruct sudoku, Koordinaten rei
     }
     return moeglicheEintraegeErmittelnRSQ(sr, ss, sq);
 }
+
 
 // Iterieren durch alle freien Felder
 // Uebergabe: aktuellen Spielstand (Sudoku) und eine Liste (Vektor) mit allen freien Feldern 
@@ -128,6 +120,7 @@ vector< vector<int> > moeglicheEintraegeErmitteln(SudokuStruct sudoku, vector<Ko
     return moeglicheEintraege;
 }
 
+
 // Ermitteln von freien Feldern und Eintragemoeglichkeiten fuer jedes Feld
 // Uebergabe: aktuellen Spielstand (Sudoku)
 // Rueckgabe: Struct mit einem Vektor fuer Koordinaten und einem Vektor fuer legale Eintragungen
@@ -139,39 +132,53 @@ Situation kombinierteFelderUndMoeglicheEintraege (SudokuStruct sudoku)
     return sit; 
 }
 
+
 // Drucken des Spielstandes (Sudoku)
 // Uebergabe: aktuellen Spielstand (Sudoku)
 void drucken (SudokuStruct sudoku)
 {
+	printf("\n");
 	for (int i = 0; i < 9; i++)
     {
         for (int j = 0; j < 9; j++)
         {
-        	printf("%d ", sudoku.sud[i][j]);
+        	printf(" %d", sudoku.sud[i][j]);
         }
         printf("\n");
     }
 }
+
 
 // Pruefen, ob in jedem Feld eine Eintragung ungleich "0" vorhanden ist 
 // Uebergabe: aktuellen Spielstand (Sudoku)
 // Rueckgabe: bool: false -> Forsetzung; true -> Kaskade an Beendigungen der Funktion "recursionEintragung()" -> beendet Programm
 bool fertig(SudokuStruct sudoku)
 {
-    int temp;
     for (int i = 0; i < 9; i++)
     {
         for (int j = 0; j < 9; j++)
         {
-            if (sudoku.sud[i][j] == 0)
-            {
-                return false;
-            }
+            if (sudoku.sud[i][j] == 0) {return false;}
         }
     }
     drucken(sudoku);
     return true;
+	
 }
+
+
+// Pruefen auf "0" - Felder ohne Eintragemoeglichkeit
+// Uebergabe: Liste an moeglichen Eintragungen (von "Situation" bereitgestellt)
+// Rueckgabe: bool: true -> Abbruch dieser Rekursion; false -> Weiterfuehrung dieser Rekursion
+bool falscherWeg(vector< vector<int> > moeg)
+{
+	for (int m = 0; m < moeg.size(); m++)
+    {
+    	if (moeg[m].size() == 0) {return true;}
+	}
+	return false;
+}
+
 
 // Rekursion, die Spielstand sichert und einzelne Eintragungen vornimmt und ruecknimmt
 // Uebergabe: aktuellen Spielstand (Sudoku)
@@ -179,33 +186,28 @@ bool fertig(SudokuStruct sudoku)
 bool recursionEintragung(SudokuStruct sudoku) 
 {
     if (fertig(sudoku) == true) {return true;}
-    SudokuStruct kopie = sudoku;
-    Situation sit = kombinierteFelderUndMoeglicheEintraege(sudoku);
-    for (int i = 0; i < 4; i++)
+    Situation sit = kombinierteFelderUndMoeglicheEintraege(sudoku);    
+    if (falscherWeg(sit.moeg) == true) {return false;}
+    
+    for (int i = 1; i < 9; i++)
     {
         for (int m = 0; m < sit.moeg.size(); m++)
         {
             if (sit.moeg[m].size() == i)
             {
-                if (i > 0)
+                for (int p = 0; p < i; p++)
                 {
-                    for (int p = 0; p < sit.moeg[m].size(); p++)
-                    {
-                        sudoku.sud[sit.frei[m].kon[0]][sit.frei[m].kon[1]] = sit.moeg[m][p];
-                        if (recursionEintragung(sudoku) == true){return true;} else {sudoku = kopie;}
-                        //printf("%d %d %d \n", sit.frei[m].kon[0], sit.frei[m].kon[1], sit.moeg[m][p]);
-                    }
+                    sudoku.sud[sit.frei[m].kon[0]][sit.frei[m].kon[1]] = sit.moeg[m][p];
+                    if (recursionEintragung(sudoku) == true){return true;} 
                 }
-                else 
-                {
-                    return false;
-                }
+				sudoku.sud[sit.frei[m].kon[0]][sit.frei[m].kon[1]] = 0;	
             }
         }
     }
     printf("fuck");
     return false;
 }
+
 
 // Initialfunktion
 // Aufrufen der Rekursion
@@ -214,5 +216,3 @@ int main()
     if (recursionEintragung(bekommeStartSudoku()) == true) {printf("Fin");} else {printf("Nope");}
     return 0;
 }
-
-// def zeichneSudoku(sudoku): !!!!!!!!!!!!!!!!!!!!!!!!!! noch zu macghen
