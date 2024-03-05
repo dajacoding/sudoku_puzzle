@@ -4,19 +4,26 @@
 
 using namespace std;
 
+// Definition des Spielstandes
 struct SudokuStruct {
     int sud[9][9];
 };
 
+// Angabe zu Feld in Sudoku
 struct Koordinaten {
 	int kon[2];
 };
 
+// Liste aus noch unbelegten Feldern
+// und dazugehoerigen moeglichen Eintragungen
 struct Situation {
     vector<Koordinaten> frei;
     vector< vector<int> > moeg; 
 };
 
+
+// das zu loesende Sudoku
+// noch zu erledigen: Entwicklung zu Eingabemaske
 SudokuStruct bekommeStartSudoku() 
 {
     SudokuStruct sudokuStart = {
@@ -32,6 +39,9 @@ SudokuStruct bekommeStartSudoku()
     return sudokuStart;
 }
 
+// Ermittlung freier Felder (jene mit default "0" - Eintrag)
+// uebergabe: aktuellen Spielstand als Sudoku
+// Rueckgabe: Vektor mit Koordinaten fuer freie Felder
 vector<Koordinaten> freieFelderErmitteln(SudokuStruct sudoku)
 {
     vector<Koordinaten> freieFelder;
@@ -49,6 +59,9 @@ vector<Koordinaten> freieFelderErmitteln(SudokuStruct sudoku)
     return freieFelder;
 }
         
+// Ermittlung von nichtvorhandenen Eintragungen zwischen "1" und "9"
+// Uebergabe: 3x Liste (Reihe, Spalte, Quadrat)
+// Rueckgabe: Vektor mit Ziffern, die in keiner der Listen vorhanden ist
 vector<int> moeglicheEintraegeErmittelnRSQ(int r[], int s[], int q[])
 {
     vector<int> temp;
@@ -70,9 +83,11 @@ vector<int> moeglicheEintraegeErmittelnRSQ(int r[], int s[], int q[])
     return temp;
 }   
 
+// Ermittlung von moeglichen Eintragungen je Feld
+// Uebergabe: aktuellen Spielstand (Sudoku) und Koordinaten fuer ein Feld
+// Rueckgabe: Vektor mit (zu diesem Spielstand) legalen Eintragemoeglichkeiten
 vector<int> moeglicheEintraegeErmittelnAlle(SudokuStruct sudoku, Koordinaten reiheSpalte)
 {
-    vector<int> temp;
     int qTemp = 0;
     int sr[9];
     int ss[9];
@@ -97,10 +112,12 @@ vector<int> moeglicheEintraegeErmittelnAlle(SudokuStruct sudoku, Koordinaten rei
             }
         }
     }
-    temp = moeglicheEintraegeErmittelnRSQ(sr, ss, sq);
-    return temp;
+    return moeglicheEintraegeErmittelnRSQ(sr, ss, sq);
 }
 
+// Iterieren durch alle freien Felder
+// Uebergabe: aktuellen Spielstand (Sudoku) und eine Liste (Vektor) mit allen freien Feldern 
+// Rueckgabe: Vektor mit Vektoren an legalen Eintragungen
 vector< vector<int> > moeglicheEintraegeErmitteln(SudokuStruct sudoku, vector<Koordinaten> freieFelder) 
 {
     vector< vector<int> > moeglicheEintraege;
@@ -111,6 +128,9 @@ vector< vector<int> > moeglicheEintraegeErmitteln(SudokuStruct sudoku, vector<Ko
     return moeglicheEintraege;
 }
 
+// Ermitteln von freien Feldern und Eintragemoeglichkeiten fuer jedes Feld
+// Uebergabe: aktuellen Spielstand (Sudoku)
+// Rueckgabe: Struct mit einem Vektor fuer Koordinaten und einem Vektor fuer legale Eintragungen
 Situation kombinierteFelderUndMoeglicheEintraege (SudokuStruct sudoku)
 {
     Situation sit;
@@ -119,19 +139,23 @@ Situation kombinierteFelderUndMoeglicheEintraege (SudokuStruct sudoku)
     return sit; 
 }
 
-SudokuStruct kopieren(SudokuStruct original)
+// Drucken des Spielstandes (Sudoku)
+// Uebergabe: aktuellen Spielstand (Sudoku)
+void drucken (SudokuStruct sudoku)
 {
-    SudokuStruct temp;
-    for (int i = 0; i < 9; i++)
+	for (int i = 0; i < 9; i++)
     {
         for (int j = 0; j < 9; j++)
         {
-            temp.sud[i][j] = original.sud[i][j];
+        	printf("%d ", sudoku.sud[i][j]);
         }
+        printf("\n");
     }
-    return temp;
 }
 
+// Pruefen, ob in jedem Feld eine Eintragung ungleich "0" vorhanden ist 
+// Uebergabe: aktuellen Spielstand (Sudoku)
+// Rueckgabe: bool: false -> Forsetzung; true -> Kaskade an Beendigungen der Funktion "recursionEintragung()" -> beendet Programm
 bool fertig(SudokuStruct sudoku)
 {
     int temp;
@@ -145,13 +169,17 @@ bool fertig(SudokuStruct sudoku)
             }
         }
     }
+    drucken(sudoku);
     return true;
 }
 
+// Rekursion, die Spielstand sichert und einzelne Eintragungen vornimmt und ruecknimmt
+// Uebergabe: aktuellen Spielstand (Sudoku)
+// Rueckgabe: bool: false -> Rueckabwicklung der letzten Eintragung; true -> beenden des Programms
 bool recursionEintragung(SudokuStruct sudoku) 
 {
     if (fertig(sudoku) == true) {return true;}
-    SudokuStruct kopie = kopieren(sudoku);
+    SudokuStruct kopie = sudoku;
     Situation sit = kombinierteFelderUndMoeglicheEintraege(sudoku);
     for (int i = 0; i < 4; i++)
     {
@@ -179,10 +207,12 @@ bool recursionEintragung(SudokuStruct sudoku)
     return false;
 }
 
+// Initialfunktion
+// Aufrufen der Rekursion
 int main()
 {    
     if (recursionEintragung(bekommeStartSudoku()) == true) {printf("Fin");} else {printf("Nope");}
     return 0;
 }
 
-// def zeichneSudoku(sudoku):
+// def zeichneSudoku(sudoku): !!!!!!!!!!!!!!!!!!!!!!!!!! noch zu macghen
