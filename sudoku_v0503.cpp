@@ -180,7 +180,7 @@ bool falscherWeg(vector< vector<int> > moeg)
 }
 
 
-// Rekursion, die Spielstand sichert und einzelne Eintragungen vornimmt und ruecknimmt
+// Rekursion, die Spielstand sichert und eine einzelne Eintragung vornimmt und ruecknimmt
 // Uebergabe: aktuellen Spielstand (Sudoku)
 // Rueckgabe: bool: false -> Rueckabwicklung der letzten Eintragung; true -> beenden des Programms
 bool recursionEintragung(SudokuStruct sudoku) 
