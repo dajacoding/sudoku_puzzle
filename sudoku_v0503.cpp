@@ -200,7 +200,7 @@ bool recursionEintragung(SudokuStruct sudoku)
                     sudoku.sud[sit.frei[m].kon[0]][sit.frei[m].kon[1]] = sit.moeg[m][p];
                     if (recursionEintragung(sudoku) == true){return true;} 
                 }
-				sudoku.sud[sit.frei[m].kon[0]][sit.frei[m].kon[1]] = 0;	
+		sudoku.sud[sit.frei[m].kon[0]][sit.frei[m].kon[1]] = 0;	
             }
         }
     }
