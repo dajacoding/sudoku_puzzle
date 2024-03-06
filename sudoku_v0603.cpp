@@ -282,7 +282,7 @@ bool recursionEintragung(SudokuStruct sudoku)
             }
         }
     }
-    //printf(" fuck");
+    //printf(" upsi");
     return false;
 }
 
@@ -292,10 +292,8 @@ bool recursionEintragung(SudokuStruct sudoku)
 SudokuStruct sudokuEingabe()
 {
 	SudokuStruct sudoku;
-	
 	cout << "Ziffern ohne Leerzeichen oder Kommata eingeben" << endl;
 	cout << "Leere Felder sind mit einer Null einzutragen" << endl;
-	
 	for (int i = 0; i < 9; i++)
 	{		
 		cout << "Zeile " << i + 1 << " eintragen: ";
@@ -313,8 +311,7 @@ SudokuStruct sudokuEingabe()
 			sudoku.sud[i][j] = inhalt[j];
 		}		
 		cout << endl;
-	}	
-	
+	}
 	return sudoku;
 }
 
@@ -323,6 +320,8 @@ SudokuStruct sudokuEingabe()
 int main()
 {    
 	if (recursionEintragung(sudokuEingabe()) == true) {printf("Fin");} else {printf("Nope");}
-    //if (recursionEintragung(bekommeStartSudoku()) == true) {printf("Fin");} else {printf("Nope");}
+    	//if (recursionEintragung(bekommeStartSudoku()) == true) {printf("Fin");} else {printf("Nope");}
+	string ende;
+	cin >> ende;
     return 0;
 }
