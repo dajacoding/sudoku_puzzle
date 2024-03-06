@@ -1,6 +1,8 @@
 # include <stdio.h>
 # include <stdbool.h>
 # include <vector>
+# include <iostream>
+# include <cmath>
 
 using namespace std;
 
@@ -21,6 +23,8 @@ struct Situation {
     vector< vector<int> > moeg; 
 };
 
+// Verwendung fuer Einzigartige Funde: Wenn gefunden true ist,
+// ist in uni genau eine Eintragung
 struct Unique {
     bool gefunden;
     Situation uni;  
@@ -32,15 +36,15 @@ struct Unique {
 SudokuStruct bekommeStartSudoku() 
 {
     SudokuStruct sudokuStart = {
-        0, 0, 6, 0, 0, 0, 0, 7, 0,        
-        8, 0, 0, 0, 0, 0, 0, 4, 6,        
-        0, 0, 5, 3, 9, 0, 0, 0, 0,        
-        0, 0, 0, 0, 0, 0, 3, 0, 1,        
-        2, 0, 7, 0, 0, 0, 0, 6, 9,        
-        0, 0, 0, 5, 0, 0, 0, 0, 0,        
-        0, 0, 0, 0, 0, 0, 0, 0, 0,        
-        0, 0, 9, 7, 0, 0, 0, 1, 5,        
-        0, 6, 0, 0, 2, 8, 0, 0, 0};  
+        6, 0, 0, 0, 0, 0, 9, 0, 0,        
+        1, 0, 0, 0, 6, 0, 7, 5, 0,        
+        0, 3, 0, 1, 0, 0, 0, 0, 0,        
+        0, 4, 0, 0, 0, 7, 5, 2, 0,        
+        0, 0, 0, 0, 2, 0, 0, 0, 3,        
+        5, 0, 0, 0, 0, 0, 0, 0, 9,        
+        0, 0, 0, 0, 0, 0, 0, 0, 2,        
+        0, 0, 8, 0, 0, 4, 0, 0, 0,        
+        3, 0, 0, 0, 7, 0, 1, 6, 0};  
     return sudokuStart;
 }
 
@@ -126,42 +130,45 @@ vector< vector<int> > moeglicheEintraegeErmitteln(SudokuStruct sudoku, vector<Ko
 }
 
 
-Unique findeUnique(Situation sit)
+// je Reihe / Spalte werden alle legalen Eintragemoeglichkeiten in einem Vektor zusammengetragen
+// Uebergabe: Situation, konkrete Reihe/Spalte Nummer, konPos(0 fuer Reihen, 1 fuer Spalten)
+// Rueckgabe: Vektor mit allen legalen Eintraegemoeglichkeiten
+vector<int> findeUniqueBekommeListe(Situation sit, int rsNr, int konPos)
+{
+	vector<int> liste;
+	for (int m = 0; m < sit.moeg.size(); m++)
+    {
+        if (sit.frei[m].kon[konPos] == rsNr)
+        {
+            for (int j = 0; j < sit.moeg[m].size(); j++)
+            {
+                liste.push_back(sit.moeg[m][j]);                    
+            }
+        }
+    }  
+    return liste;
+}
+
+
+// Finde in Reihen und Spalten einen einzigartigen Eintrag
+// Uebergabe: Situation und konPos(0 fuer Reihen, 1 fuer Spalten)
+// Rueckgabe: Unique (entspricht einer auf einen Eintrag reduzierten Situation UND einem bool - Wert)
+Unique findeUnique(Situation sit, int konPos)
 {
     Unique unikat;
+    unikat.gefunden = false;
     for (int i = 0; i < 9; i++)
     {
-        vector<int> reihe;
-        vector<int> spalte;
-        for (int m = 0; m < sit.moeg.size(); m++)
-        {
-            if (sit.frei[m].kon[0] == i)
-            {
-                for (int j = 0; j < sit.moeg[m].size(); j++)
-                {
-                    reihe.push_back(sit.moeg[m][j]);                    
-                }
-            }
-            if (sit.frei[m].kon[1] == i)
-            {
-                for (int j = 0; j < sit.moeg[m].size(); j++)
-                {
-                    spalte.push_back(sit.moeg[m][j]);                    
-                }
-            }
-        }  
-        int rr[10] {};
-        for (int r = 0; r < reihe.size(); r++)
-        {
-            rr[reihe[r]]++;
-        }
+        vector<int> liste = findeUniqueBekommeListe(sit, i, konPos);        
+        int listeWichtung[10] = {};
+        for (int l = 0; l < liste.size(); l++) {listeWichtung[liste[l]]++;}
         for (int r = 0; r < 10; r++)
         {
-            if (rr[r] == 1) 
+            if (listeWichtung[r] == 1) 
             {
                 for (int m = 0; m < sit.moeg.size(); m++)
                 {
-                    if (sit.frei[m].kon[0] == i)
+                    if (sit.frei[m].kon[konPos] == i)
                     {
                         for (int j = 0; j < sit.moeg[m].size(); j++)
                         {
@@ -180,8 +187,7 @@ Unique findeUnique(Situation sit)
             }
         }
     }
-    
-    unikat.gefunden = false;
+    if (konPos == 0) {unikat = findeUnique(sit, 1);}	  
     return unikat;
 }
 
@@ -195,7 +201,7 @@ Situation kombinierteFelderUndMoeglicheEintraege (SudokuStruct sudoku)
     sit.moeg = moeglicheEintraegeErmitteln(sudoku, sit.frei); 
     
     // einzigartiges finden
-    Unique unikat = findeUnique(sit);
+    Unique unikat = findeUnique(sit, 0);
     if (unikat.gefunden == true)
     {
         sit = unikat.uni;
@@ -276,15 +282,47 @@ bool recursionEintragung(SudokuStruct sudoku)
             }
         }
     }
-    printf(" fuck");
+    //printf(" fuck");
     return false;
 }
 
+
+// Aufforderung zur zeilenweisen Eingabe des Sudokus !!! es werden KEINE Fehleingaben abgefangen !!!
+// Rueckgabe: SudokuStruct
+SudokuStruct sudokuEingabe()
+{
+	SudokuStruct sudoku;
+	
+	cout << "Ziffern ohne Leerzeichen oder Kommata eingeben" << endl;
+	cout << "Leere Felder sind mit einer Null einzutragen" << endl;
+	
+	for (int i = 0; i < 9; i++)
+	{		
+		cout << "Zeile " << i + 1 << " eintragen: ";
+		int zeile;
+		cin >> zeile;
+		int inhalt[9]; 
+		for (int j = 0; j < 9; j++)
+		{
+			int pot = pow(10,(8-j));
+			inhalt[j] = zeile / pot;
+			zeile = zeile % pot;
+		}
+		for (int j = 0; j < 9; j++)
+		{
+			sudoku.sud[i][j] = inhalt[j];
+		}		
+		cout << endl;
+	}	
+	
+	return sudoku;
+}
 
 // Initialfunktion
 // Aufrufen der Rekursion
 int main()
 {    
-    if (recursionEintragung(bekommeStartSudoku()) == true) {printf("Fin");} else {printf("Nope");}
+	if (recursionEintragung(sudokuEingabe()) == true) {printf("Fin");} else {printf("Nope");}
+    //if (recursionEintragung(bekommeStartSudoku()) == true) {printf("Fin");} else {printf("Nope");}
     return 0;
 }
