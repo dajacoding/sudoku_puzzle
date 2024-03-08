@@ -135,8 +135,8 @@ vector< vector<int> > moeglicheEintraegeErmitteln(SudokuStruct sudoku, vector<Ko
 // Rueckgabe: Vektor mit allen legalen Eintraegemoeglichkeiten
 vector<int> findeUniqueBekommeListe(Situation sit, int rsNr, int konPos)
 {
-	vector<int> liste;
-	for (int m = 0; m < sit.moeg.size(); m++)
+    vector<int> liste;
+    for (int m = 0; m < sit.moeg.size(); m++)
     {
         if (sit.frei[m].kon[konPos] == rsNr)
         {
